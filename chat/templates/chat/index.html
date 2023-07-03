@@ -1,43 +1,3 @@
-{#<!DOCTYPE html>#}
-{#<html>#}
-{#<head>#}
-{#    <meta charset="utf-8"/>#}
-{#    <title>Chat Rooms</title>#}
-{#</head>#}
-{#<body>#}
-{#    What chat room would you like to enter?<br>#}
-{#    <input id="username-input" type="text" size="100"><br>#}
-{#    <input id="room-name-input" type="text" size="100"><br>#}
-{#    <input id="room-name-submit" type="button" value="Enter">#}
-{##}
-{#    <script>#}
-{#        document.querySelector('#room-name-input').focus();#}
-{#        document.querySelector('#room-name-input').onkeyup = function(e) {#}
-{#            if (e.keyCode === 13) {  // enter, return#}
-{#                document.querySelector('#room-name-submit').click();#}
-{#            }#}
-{#        };#}
-{##}
-{#        document.querySelector('#room-name-submit').onclick = function(e) {#}
-{#            var roomName = document.querySelector('#room-name-input').value;#}
-{#            window.location.pathname = '/chat/' + roomName + '/';#}
-{#        };#}
-{#    </script>#}
-{#    <script>#}
-{#            document.querySelector('#room-name-input').focus();#}
-{##}
-{#            document.querySelector('#room-name-submit').onclick = function(e) {#}
-{#                var roomName = document.querySelector('#room-name-input').value;#}
-{#                var userName = document.querySelector('#username-input').value;#}
-{##}
-{#                window.location.replace(roomName + '/?username=' + userName);#}
-                {#window.location.pathname = '/chat/' + roomName + '/';#}
-{#            };#}
-{#    </script>#}
-{#</body>#}
-{#</html>#}
-
-
 <!DOCTYPE html>
 
 <html>
@@ -55,7 +15,7 @@
                         <section class="hero is-primary">
                             <div class="hero-body">
                                 <p class="title">
-                                    Chatty
+                                    Chatting Application
                                 </p>
                                 <p class="subtitle">
                                     A simple chat built with Django, Channels and Redis
@@ -64,6 +24,9 @@
                         </section>
                     </div>
 
+                    <p class="subtitle column is-5 is-offset-4" style="color: #00d1b2;">
+                        To create new Room enter Room name and Username
+                    </p>
                     <div class="column is-4 is-offset-4">
                         <div class="field">
                             <label>Room name</label>
@@ -80,13 +43,44 @@
                                 <input class="input" type="text" placeholder="Username" id="username-input">
                             </div>
                         </div>
-
                         <div class="field">
                             <div class="control">
                                 <a class="button is-info" id="room-name-submit">Submit</a>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="container">
+                <div class="columns is-multiline">
+                    <p class="subtitle column is-5 is-offset-4" style="color: #00d1b2;">
+                        To join existing Room enter Username and select room
+                    </p>
+                    <div class="column is-4 is-offset-4">
+
+                        <div class="field">
+                            <label>Username</label>
+                            <div class="control">
+                                <input class="input" type="text" placeholder="Username" id="username-inputs">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="control">
+                                {% for room in room_names %}
+                                    <ul>
+                                    <li>
+                                        <a class="button is-info room-name-select">{{ room.room_name }}</a>
+                                    </li>
+
+                                </ul>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </section>
@@ -98,8 +92,31 @@
                 var roomName = document.querySelector('#room-name-input').value;
                 var userName = document.querySelector('#username-input').value;
 
-                window.location.replace(roomName + '/' + userName);
+                if (roomName && userName) {
+                    window.location.replace(roomName + '/' + userName);
+                }
+            else {
+                alert('Please enter both room name and username.');
+            }
             };
+
+            const roomNameButtons = document.querySelectorAll('.room-name-select');
+            const usernameInput = document.querySelector('#username-inputs');
+            roomNameButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const roomName = button.textContent;
+                    const userName = usernameInput.value.trim();
+                    if (userName) {
+                        const url = roomName + '/' + userName;
+                        window.location.replace(url);
+                    }
+                    else {
+                        alert('Please enter username.');
+                    }
+                });
+            });
+
+
         </script>
     </body>
 </html>

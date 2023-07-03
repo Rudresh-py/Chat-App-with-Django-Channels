@@ -6,3 +6,7 @@ class Messages(models.Model):
     username = models.CharField(max_length=250)
     content = models.TextField(max_length=500)
 
+
+class Users(models.Model):
+    username = models.CharField(max_length=250)
+    password = models.CharField(max_length=250)

@@ -13,7 +13,7 @@
                         <section class="hero is-primary">
                             <div class="hero-body">
                                 <p class="title">
-                                    Chatty
+                                    Chatting Application
                                 </p>
                                 <p class="subtitle">
                                     A simple chat built with Django, Channels and Redis
@@ -24,9 +24,16 @@
 
                     <div class="column is-6 is-offset-3">
                         <div class="box">
-                            <div id="chat-log" style="max-height: 300px; overflow-y: scroll;">{% for m in messages %}<b>{{ m.username }}</b>: {{ m.content }}<br>{% endfor %}</div>
+                            <div id="chat-log" style="max-height: 300px; overflow-y: scroll;">
+                                {% for m in messages %}<b>
+                                {% if m.username == username %}
+                                    You
+                                    {% else %}
+                                    {{ m.username }}</b>
+                                    {% endif %}
+                                    : {{ m.content }}<br>{% endfor %}
+                            </div>
                         </div>
-
                         <div class="field">
                             <div class="control">
                                 <input class="input" type="text" placeholder="Message" id="chat-message-input">
@@ -59,9 +66,9 @@
             const userName = JSON.parse(document.getElementById('user-name').textContent);
 
             const chatSocket = new WebSocket(
-                'ws://'
+                'wss://'
                 + window.location.host
-                + '/ws/chat/'
+                + '/wss/chat/'
                 + roomName
                 + '/'
             );
@@ -72,7 +79,8 @@
                 const data = JSON.parse(e.data);
 
                 if (data.message) {
-                    document.querySelector('#chat-log').innerHTML += ('<b>' + data.username + '</b>: ' + data.message + '<br>');
+                    const username = data.username === '{{ username }}' ? 'You' : data.username;
+                    document.querySelector('#chat-log').innerHTML += ('<b>' + username + '</b>: ' + data.message + '<br>');
                 } else {
                     alert('The message is empty!');
                 }
